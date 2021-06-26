@@ -14,8 +14,11 @@ public class WeaponCreator : EditorWindow
     private static Material _weaponMaterial;
     private WeaponConfig _loadConfig;
 
+    private static readonly GUIStyle _titleStyle = new GUIStyle(EditorStyles.label);
+    private static readonly GUIStyle _style = new GUIStyle(EditorStyles.label);
     private static readonly GUIStyle _errorStyle = new GUIStyle(EditorStyles.label);
     private static bool _createInScene;
+    
     private bool _configError;
 
     [MenuItem("CustomTools/WeaponCreator")]
@@ -26,40 +29,82 @@ public class WeaponCreator : EditorWindow
         window.wantsMouseMove = true;
 
         _errorStyle.normal.textColor = Color.red;
-
-        window.minSize = new Vector2(500, 330);
+        _titleStyle.normal.textColor = Color.black;
+        _style.normal.textColor = Color.black;
+        _titleStyle.fontSize = 20;
+        
+        window.minSize = new Vector2(370, 340);
+        window.maxSize = new Vector2(370, 340);
     }
 
     private void OnGUI()
     {
-        _weaponName = EditorGUILayout.TextField("Weapon Name:", _weaponName);
-        EditorGUILayout.Space();
-        _weaponQualityLevel = (WeaponConfig.Quality) EditorGUILayout.EnumPopup("Weapon Quality Level", _weaponQualityLevel);
-        EditorGUILayout.Space();
-        _weaponDamage = EditorGUILayout.FloatField("Weapon Damage", _weaponDamage);
-        EditorGUILayout.Space();
-        _weaponRecoil = EditorGUILayout.FloatField("Weapon Recoil", _weaponRecoil);
-        EditorGUILayout.Space();
-        
         EditorGUILayout.BeginHorizontal();
-        _weaponMesh = (Mesh) EditorGUILayout.ObjectField("Weapon Mesh", _weaponMesh, typeof(Mesh), false);
+        EditorGUI.LabelField(new Rect(position.width / 2 - 80, 10, 200, 200), "Weapon Creator", _titleStyle);
         EditorGUILayout.EndHorizontal();
-        EditorGUILayout.Space();
-        EditorGUILayout.BeginHorizontal();
-        _weaponMaterial = (Material) EditorGUILayout.ObjectField("Weapon Material", _weaponMaterial, typeof(Material), false);
-        EditorGUILayout.EndHorizontal();
-        
-        EditorGUILayout.Space();
-        _createInScene = EditorGUILayout.Toggle("Generate in scene", _createInScene);
-        EditorGUILayout.Space();
 
         EditorGUILayout.BeginHorizontal();
-        _loadConfig = (WeaponConfig) EditorGUILayout.ObjectField("Load Config", _loadConfig, typeof(WeaponConfig), false);
+        GUI.Label(new Rect(10, 50, 200,25),"Weapon Name: ",_style);
+        _weaponName = EditorGUI.TextField(new Rect(150 , 50, 200,15), _weaponName);
         EditorGUILayout.EndHorizontal();
         
-        EditorGUILayout.Space();
-        EditorGUILayout.Space();
+        EditorGUILayout.BeginHorizontal();
+        GUI.Label(new Rect(10, 80, 200,25),"Weapon Quality Level: ",_style);
+        _weaponQualityLevel = (WeaponConfig.Quality) EditorGUI.EnumPopup(new Rect(150 , 80, 200,15), _weaponQualityLevel);
+        EditorGUILayout.EndHorizontal();
         
+        EditorGUILayout.BeginHorizontal();
+        GUI.Label(new Rect(10, 110, 200,25),"Weapon Mesh: ",_style);
+        _weaponMesh = (Mesh) EditorGUI.ObjectField(new Rect(150, 110, 200, 15), _weaponMesh, typeof(Mesh), false);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        GUI.Label(new Rect(10, 140, 200,25),"Weapon Material: ",_style);
+        _weaponMaterial = (Material) EditorGUI.ObjectField(new Rect(150, 140, 200, 15), _weaponMaterial, typeof(Material), false);
+        EditorGUILayout.EndHorizontal();
+        
+        EditorGUILayout.BeginHorizontal();
+        GUI.Label(new Rect(10, 170, 200,25),"Generate in Scene: ",_style);
+        _createInScene = EditorGUI.Toggle(new Rect(150, 170, 200, 15), _createInScene);
+        EditorGUILayout.EndHorizontal();
+        
+        DrawUILine(Color.gray, 2, 380);
+        EditorGUILayout.BeginHorizontal();
+        GUI.Label(new Rect(10, 200, 200,25),"Load Config: ",_style);
+        _loadConfig = (WeaponConfig) EditorGUI.ObjectField(new Rect(150, 200, 200, 15), _loadConfig, typeof(WeaponConfig), false);
+        EditorGUILayout.EndHorizontal();
+
+        if (GUI.Button(new Rect(position.width / 2 - 100, 230, 200, 25), "Load Configuration"))
+        {
+            if (_loadConfig != null)
+            {
+                _configError = false;
+                LoadConfig();
+            }
+            else
+            {
+                _configError = true;
+            }
+        }
+
+        if (_configError)
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUI.Label(new Rect(position.width / 2 - 100, 260, 200,25),"There is no configuration selected!", _errorStyle);
+            EditorGUILayout.EndHorizontal();
+        }
+        
+        DrawUILine(Color.gray, 2, -220);
+        
+        if (_weaponName != null && _weaponDamage >= 0 && _weaponRecoil >= 0 && _weaponMesh != null &&
+           _weaponMaterial != null)
+        {
+            EditorGUILayout.BeginHorizontal();
+            if (GUI.Button(new Rect(10, 285, 350, 50), "Generate!"))
+                GenerateWeapon();
+            EditorGUILayout.EndHorizontal();
+        }
+        /*
         if (GUILayout.Button("Load Configuration", GUILayout.Height(30)))
         {
             if (_loadConfig != null)
@@ -83,9 +128,19 @@ public class WeaponCreator : EditorWindow
         {
             if (GUILayout.Button("Generate!", GUILayout.Height(50)))
                 GenerateWeapon();   
-        }
+        }*/
     }
 
+    private void DrawUILine(Color color, int thickness = 2, int padding = 10)
+    {
+        Rect r = EditorGUILayout.GetControlRect(GUILayout.Height(padding+thickness));
+        r.height = thickness;
+        r.y+=padding/2;
+        r.x-=2;
+        r.width +=6;
+        EditorGUI.DrawRect(r, color);
+    }
+    
     private void LoadConfig()
     {
         _weaponName = _loadConfig.Name;
