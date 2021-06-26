@@ -104,31 +104,6 @@ public class WeaponCreator : EditorWindow
                 GenerateWeapon();
             EditorGUILayout.EndHorizontal();
         }
-        /*
-        if (GUILayout.Button("Load Configuration", GUILayout.Height(30)))
-        {
-            if (_loadConfig != null)
-            {
-                _configError = false;
-                LoadConfig();
-            }
-            else
-            {
-                _configError = true;
-            }
-        }
-
-        if (_configError)
-            EditorGUILayout.LabelField("There is no configuration selected!", _errorStyle);
-
-        EditorGUILayout.Space();
-        
-        if (_weaponName != null && _weaponDamage >= 0 && _weaponRecoil >= 0 && _weaponMesh != null &&
-            _weaponMaterial != null)
-        {
-            if (GUILayout.Button("Generate!", GUILayout.Height(50)))
-                GenerateWeapon();   
-        }*/
     }
 
     private void DrawUILine(Color color, int thickness = 2, int padding = 10)
