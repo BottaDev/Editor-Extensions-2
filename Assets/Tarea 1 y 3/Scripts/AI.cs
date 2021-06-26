@@ -7,8 +7,9 @@ using UnityEngine.AI;
 public class AI : MonoBehaviour
 {
     public float Speed = 5f;
-
-    private int _currentPoint = 0;
+    [HideInInspector]
+    public int currentPoint = 0;
+    
     private AIPath _path;
     private NavMeshAgent _agent;
     
@@ -27,13 +28,13 @@ public class AI : MonoBehaviour
     {
         _agent.speed = Speed;
 
-        if (Vector3.Distance(_path.pathPositions[_currentPoint].position, transform.position) < _agent.stoppingDistance)
+        if (Vector3.Distance(_path.pathPositions[currentPoint].position, transform.position) < _agent.stoppingDistance)
         {
-            _currentPoint++;
-            if (_currentPoint > _path.pathPositions.Count - 1)
-                _currentPoint = 0;
+            currentPoint++;
+            if (currentPoint > _path.pathPositions.Count - 1)
+                currentPoint = 0;
         }
         
-        _agent.destination = _path.pathPositions[_currentPoint].position;
+        _agent.destination = _path.pathPositions[currentPoint].position;
     }
 }

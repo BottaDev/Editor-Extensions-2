@@ -4,15 +4,19 @@ using System.Collections.Generic;
 using System.Xml.Schema;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.XR;
 
 [CustomEditor(typeof(AIPath))]
 public class PathEditor : Editor
 {
     private AIPath _target;
-    
+    private AI _ai;
+
     private void OnEnable()
     {
         _target = (AIPath)target;
+        
+        _ai = ((MonoBehaviour)target).gameObject.GetComponent<AI>();
     }
 
     public override void OnInspectorGUI()
@@ -34,10 +38,20 @@ public class PathEditor : Editor
 
     private void OnSceneGUI()
     {
-        DrawLines();
+        DrawDirectionLine();
+        DrawDotLines();
+    }
+
+    private void DrawDirectionLine()
+    {
+        if (_ai == null)
+            return;
+        
+        Handles.color = Color.magenta;
+        Handles.DrawLine(_target.transform.position, _target.pathPositions[_ai.currentPoint].position);
     }
     
-    private void DrawLines()
+    private void DrawDotLines()
     {
         if (_target.pathPositions.Count <= 0)
             return;;
@@ -50,6 +64,8 @@ public class PathEditor : Editor
         
         for (int i = 0; i < _target.pathPositions.Count; i++)
         {
+            Handles.color = Color.white;
+            
             if (i == 0)
                 DrawPathText("Start", _target.pathPositions[i]);
             else if (i == _target.pathPositions.Count - 1)
@@ -112,9 +128,5 @@ public class PathEditor : Editor
         GUI.Label(ry, node.position.y.ToString(".000"), yStyle);
         GUI.Label(rz, node.position.z.ToString(".000"), zStyle);
         Handles.EndGUI();
-        //Handles.Label(transform.position + Vector3.right, transform.position.x.ToString(".000"), xStyle);
-        //Handles.Label(pos, transform.position.x.ToString(".000"), xStyle);
-        //Handles.Label(transform.position + Vector3.up, transform.position.y.ToString(".000"), yStyle);
-        //Handles.Label(transform.position + Vector3.forward, transform.position.z.ToString(".000"), zStyle);
     }
 }

@@ -1,12 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
+[RequireComponent(typeof(AI))]
 public class AIPath : MonoBehaviour
 {
     public List<Transform> pathPositions;
+
+    [HideInInspector]
+    public AI ai;
+    
+    private void Awake()
+    {
+        ai = GetComponent<AI>();
+    }
 
     public GameObject CreateNode(bool fromNode = false)
     {
