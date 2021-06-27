@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Schema;
 using UnityEditor;
 using UnityEngine;
@@ -38,6 +39,12 @@ public class PathEditor : Editor
 
     private void OnSceneGUI()
     {
+        if (_target.pathPositions.Count <= 0)
+            return;;
+
+        if (_target.pathPositions.Any(i => i == null))
+            return;
+        
         DrawDirectionLine();
         DrawDotLines();
     }
@@ -53,15 +60,6 @@ public class PathEditor : Editor
     
     private void DrawDotLines()
     {
-        if (_target.pathPositions.Count <= 0)
-            return;;
-
-        for (int i = 0; i < _target.pathPositions.Count; i++)
-        {
-            if (_target.pathPositions[i] == null)
-                return;
-        }
-        
         for (int i = 0; i < _target.pathPositions.Count; i++)
         {
             Handles.color = Color.white;
