@@ -65,22 +65,30 @@ public class NodeEditor : Editor
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("Add Adjacent", GUILayout.Height(30)))
+        {
             _target.AddNode(true);
-        if(GUILayout.Button("Add Preceding ", GUILayout.Height(30)))
+            EditorUtility.SetDirty(target);
+        }
+        
+        if (GUILayout.Button("Add Preceding ", GUILayout.Height(30)))
+        {
             _target.AddNode(false);
+            EditorUtility.SetDirty(target);
+        }
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("Delete Node", GUILayout.Height(20)))
+        {
+            EditorUtility.SetDirty(target);
             _target.DeleteNode();
+        }
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
-
         EditorGUILayout.EndVertical();
-
-
+        
         GUILayout.EndArea();
     }
 }

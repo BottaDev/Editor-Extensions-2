@@ -10,14 +10,6 @@ public class AIPath : MonoBehaviour
 {
     public List<Transform> pathPositions;
 
-    [HideInInspector]
-    public AI ai;
-    
-    private void Awake()
-    {
-        ai = GetComponent<AI>();
-    }
-
     public GameObject CreateNode(bool fromNode = false)
     {
         GameObject newNode = new GameObject("P" + (pathPositions.Count + 1));

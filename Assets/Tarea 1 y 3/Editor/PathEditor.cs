@@ -29,12 +29,19 @@ public class PathEditor : Editor
         serializedObject.ApplyModifiedProperties();
         
         EditorGUILayout.Space();
-        
+
         if (GUILayout.Button("Create Node", GUILayout.Height(30)))
+        {
             _target.CreateNode();
-        
+            EditorUtility.SetDirty(target);
+        }
+
         if (GUILayout.Button("Destroy all Nodes", GUILayout.Height(20)))
+        {
             _target.DestroyNodes();
+            EditorUtility.SetDirty(target);
+        }
+            
     }
 
     private void OnSceneGUI()
